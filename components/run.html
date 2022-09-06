@@ -1,0 +1,66 @@
+<script total>
+	exports.name = 'Run (node & edges)';
+    exports.icon = 'fa fa-code';
+    exports.author = 'Team_Typerefienry';
+    exports.group = 'TypeRefinery';
+    exports.version = '1';
+    exports.config = { algorithm: '',endpoint:'' };
+    exports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'query', name: 'TQL Query' }];
+    exports.outputs = [{ id: 'output', name: 'Output' }];
+    exports.meta = { settingswidth: 1200 };
+
+    exports.make = function(instance, config) {
+        var fn;
+        var values = {};
+        instance.message = function($) {
+            const endpointData = {
+                 endpoint: config.endpoint,
+            }
+            values[$.input] = $.data;
+            if (values.connection && values.query && config.algorithm) {
+                var payload = {
+                    dbhost: values.connection.dbhost,
+                    dbport: values.connection.dbport,
+                    dbdatabase: values.connection.dbdatabase,
+                    dbquery: values.query.dbquery,
+                    algorithm: config.algorithm,
+                    algorithmrequirements: 'argparse\nloguru',
+                    returnoutput: 'output'
+                };
+                let options = {
+            		method: 'POST',
+            		headers: {
+                		'Content-Type':
+                    	'application/json;charset=utf-8'
+            	},
+            	body: JSON.stringify(payload)
+        }
+        let fetchRes = fetch(endpointData.endpoint,options);
+        fetchRes.then(res =>
+            res.json()).then(d => { $.send('output', d) }).catch(err => { $.send('output', err) })
+                values.query = null;
+            } else {
+                // IMPORTANT: we must destroy the current message becase we don't need to send it next
+                $.destroy();
+            }
+        };
+        instance.close = function() {
+            fn = null;
+        };
+    };
+</script>
+<readme>
+    Lorem ipsum dolor sit amet consectetur adipisicing, elit. Laudantium, in.
+</readme>
+<settings>
+    <div class="padding">
+        <div data---="input__?.endpoint__required:1" class="m">Endpont</div>
+        <div class="ui-input-label">Algorithm:</div>
+        <div data---="codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true" class="m"></div>
+    </div>
+</settings>
+<body>
+    <header>
+        <i class="ICON"></i>NAME
+    </header>
+</body>
