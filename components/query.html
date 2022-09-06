@@ -1,0 +1,33 @@
+<script total>
+  exports.name = "TQL Query";
+  exports.icon = "fa fa-code";
+  exports.author = "Total Avengers";
+  exports.group = "TypeRefinery";
+  exports.version = "1";
+  exports.config = {};
+  exports.inputs = [{ id: "input", name: "Input" }];
+  exports.outputs = [{ id: "output", name: "Output" }];
+  exports.meta = { settingswidth: 1200 };
+  exports.make = function (instance, config) {
+    instance.message = function ($) {
+      var data = {
+        ...$.data,
+        dbquery: config.query,
+      };
+      instance.send("output", data);
+    };
+  };
+</script>
+<readme> </readme>
+<settings>
+  <div class="padding">
+    <div class="ui-input-label">Query:</div>
+    <div
+      data---="codemirror__?.query__type:tql;minheight:300;parent:auto;margin:60;tabs:true;trim:true"
+      class="m"
+    ></div>
+  </div>
+</settings>
+<body>
+  <header><i class="ICON"></i>NAME</header>
+</body>

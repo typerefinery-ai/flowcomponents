@@ -1,0 +1,24 @@
+[
+  {
+    "id": "counter",
+    "group": "Common",
+    "name": "Counter",
+    "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/components/counter.html",
+    "author": "Total.js",
+    "icon": "fa fa-calculator",
+    "color": "",
+    "version": "1",
+    "readme": "The component counts incoming messages."
+  },
+  {
+    "id": "query",
+    "group": "TypeRefinery",
+    "name": "Query",
+    "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/components/counter.html",
+    "author": "Total.js",
+    "icon": "fa fa-code",
+    "color": "",
+    "version": "1",
+    "readme": "Query"
+  }
+]
