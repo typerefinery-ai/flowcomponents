@@ -1,0 +1,54 @@
+<script total>
+    exports.name = 'Datastore Query';
+    exports.icon = 'fa fa-code';
+    exports.author = 'Total Avengers';
+    exports.group = 'TypeRefinery';
+    exports.version = '1';
+    exports.config = {queryid: ''};
+    exports.inputs = [{ id: 'input', name: 'Input' }];
+    exports.outputs = [{ id: 'output', name: 'Output' }];
+    exports.meta = { settingswidth: 1200 };
+    exports.make = function(instance, config) {
+        instance.message = async function($) {
+          const endpoint = 'http://127.0.0.1:8000/datastore/query';
+          var output;
+          const res = await fetch(endpoint);
+          const res_data = await res.json();
+          output = res_data.map(el => ({id: el.queryid, name: `${el.label} (${el.queryid},${el.query.substr(12)})`})); // dropdown data
+          const query = res_data.find(el => el.queryid === config.queryid)
+          instance.send('output', query.query);
+
+          instance.call = async function(data, answer) {
+                  answer(output);
+          };
+        };
+
+		instance.configure = function() {
+		};
+
+		instance.close = function() {
+		};
+
+		instance.configure();
+    };
+</script>
+<readme>
+</readme>
+<script>
+    // datastorequery is the name of your component in lower-case
+    ON('configure_datastorequery', function(data) {
+        data.call(function(response) {
+            SET('%queryidList', response);
+        });
+    });
+</script>
+<settings>
+    <div class="padding">
+        <div data---="input__?.queryid__dirsource:%queryidList;dirraw:1;placeholder:Choose a query;dirempty:No query" class="m"><b>Query</b></div>
+    </div>
+</settings>
+<body>
+    <header>
+        <i class="ICON"></i>NAME
+    </header>
+</body>
