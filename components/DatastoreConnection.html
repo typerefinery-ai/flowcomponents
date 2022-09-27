@@ -16,11 +16,13 @@
             const res_data = await res.json();
             output = res_data.map(el => ({id: el.connectionid, name: el.connectionid }));
             const connection = res_data.find(el => el.connectionid === config.connectionid)
-            instance.send('output', {
-              dbhost: connection.host,
-              dbport: connection.port,
-              dbdatabase: connection.database,
-            });
+	    if(connection) {
+		instance.send('output', {
+		dbhost: connection.host,
+		dbport: connection.port,
+		dbdatabase: connection.database,
+	    });
+	    }
             instance.call = async function(data, answer) {
                 answer(output);
             };
