@@ -16,7 +16,7 @@
             const res_data = await res.json();
             output = res_data.map(el => ({id: el.themeid, name: `${el.label} (${el.themeid},${el.theme.substr(12)})`})); // dropdown data
             const theme = res_data.find(el => el.themeid === config.themeid)
-            instance.send('output',JSON.parse(theme.theme));
+            if(theme) instance.send('output',JSON.parse(theme.theme));
             instance.call = async function(data, answer) {
                 answer(output);
             };
