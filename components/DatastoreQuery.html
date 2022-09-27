@@ -16,7 +16,7 @@
           const res_data = await res.json();
           output = res_data.map(el => ({id: el.queryid, name: `${el.label} (${el.queryid},${el.query.substr(12)})`})); // dropdown data
           const query = res_data.find(el => el.queryid === config.queryid)
-          instance.send('output', query.query);
+          if(query) instance.send('output', query.query);
 
           instance.call = async function(data, answer) {
                   answer(output);
