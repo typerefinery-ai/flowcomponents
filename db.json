@@ -1,61 +1,50 @@
 [
   {
-    "id": "counter",
-    "group": "Common",
-    "name": "Counter",
-    "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/counter.html",
-    "author": "Team_Typerefienry",
-    "icon": "fa fa-calculator",
-    "color": "",
-    "version": "1",
-    "readme": "The component counts incoming messages."
-  },
-  {
     "id": "query",
     "group": "TypeRefinery",
-    "name": "Query",
-    "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/query.html",
+    "name": "Datastore Query",
+    "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/DatastoreQuery.html",
     "author": "Team_Typerefienry",
     "icon": "fa fa-code",
     "color": "",
     "version": "1",
-    "readme": "Query"
+    "readme": ""
   },
   {
-    "id": "Connection",
+    "id": "connection",
     "group": "TypeRefinery",
-    "name": "Connection",
-    "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/connection.html",
+    "name": "Datastore Connection",
+    "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/DatastoreConnection.html",
     "author": "Team_Typerefienry",
     "icon": "fa fa-code",
     "color": "",
     "version": "1",
-    "readme": "Connection"
+    "readme": ""
   },
   {
-    "id": "Run",
+    "id": "run",
     "group": "TypeRefinery",
-    "name": "Run(node&edges)",
+    "name": "Run (node & edges)",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/run.html",
     "author": "Team_Typerefienry",
     "icon": "fa fa-code",
     "color": "",
     "version": "1",
-    "readme": "Run"
+    "readme": ""
   },
   {
-    "id": "Theme",
+    "id": "theme",
     "group": "TypeRefinery",
-    "name": "Theme",
-    "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/Theme.html",
+    "name": "Datastore Theme",
+    "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/DatastoreTheme.html",
     "author": "Team_Typerefienry",
     "icon": "fa fa-code",
     "color": "",
     "version": "1",
-    "readme": "Theme"
+    "readme": ""
   },
   {
-    "id": "Webcola",
+    "id": "webcola",
     "group": "TypeRefinery",
     "name": "Webcola Viz",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/Webcola.html",
@@ -63,10 +52,10 @@
     "icon": "fa fa-code",
     "color": "",
     "version": "1",
-    "readme": "Webcola"
+    "readme": ""
   },
   {
-    "id": "Print-Json",
+    "id": "printJson",
     "group": "TypeRefinery",
     "name": "Print-Json",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/printJson.html",
@@ -77,7 +66,7 @@
     "readme": "Print-Json"
   },
   {
-    "id": "Print",
+    "id": "print",
     "group": "TypeRefinery",
     "name": "Print",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/print.html",
