@@ -10,28 +10,28 @@
     exports.meta = { settingswidth: 1200 };
     exports.make = function(instance, config) {
         instance.message = async function($) {
-			var themesList;
+	var themesList;
 
-			// Getting all the themes from the store
-            const endpoint = 'http://127.0.0.1:8000/datastore/theme';
-            const res = await fetch(endpoint);
-            const res_data = await res.json();
+	// Getting all the themes from the store
+        const endpoint = 'http://127.0.0.1:8000/datastore/theme';
+        const res = await fetch(endpoint);
+        const res_data = await res.json();
 
-			// Getting theme details to display the dropdown list of all themes
-            themesList = res_data.map(el => ({id: el.themeid, name: `${el.label} (${el.themeid},${el.theme.substr(12)})`}));
+	// Getting theme details to display the dropdown list of all themes
+        themesList = res_data.map(el => ({id: el.themeid, name: `${el.label} (${el.themeid},${el.theme.substr(12)})`}));
 
-			// Find the selected theme
-            const selectedTheme = res_data.find(el => el.themeid === config.themeid)
+	// Find the selected theme
+        const selectedTheme = res_data.find(el => el.themeid === config.themeid)
 
-			if(selectedTheme) {
-				const themeDetails = JSON.parse(selectedTheme.theme);
-				// send the theme details as the output of this block
-				instance.send('output', themeDetails);
-			}
-			// Set the themes dropdown in the UI
-            instance.call = async function(data, answer) {
-                answer(themesList);
-            };
+	if(selectedTheme) {
+		const themeDetails = JSON.parse(selectedTheme.theme);
+		// send the theme details as the output of this block
+		instance.send('output', themeDetails);
+	}
+	// Set the themes dropdown in the UI
+        instance.call = async function(data, answer) {
+            	answer(themesList);
+        };
         };
         instance.configure = function(el) {
         };
