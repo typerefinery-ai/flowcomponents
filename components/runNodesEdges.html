@@ -1,7 +1,7 @@
 <script total>
-	exports.name = 'Run (node & edges)';
+    exports.name = 'Run (node & edges)';
     exports.icon = 'fa fa-code';
-    exports.author = 'Team_Typerefienry';
+    exports.author = 'TypeRefinery';
     exports.group = 'TypeRefinery';
     exports.version = '1';
     exports.config = { algorithm: '',endpoint:'' };
@@ -13,12 +13,15 @@
         var fn;
         var values = {};
         instance.message = function($) {
-            const endpointData = {
+	// Getting endpoint from the user
+        const endpointData = {
                  endpoint: config.endpoint,
-            }
-            values[$.input] = $.data;
-            if (values.connection && values.query && config.algorithm) {
-                var payload = {
+        }
+	
+	// Inputs to this block will be saved in values Object
+        values[$.input] = $.data;
+        if (values.connection && values.query && config.algorithm) {
+            var payload = {
                     dbhost: values.connection.dbhost,
                     dbport: values.connection.dbport,
                     dbdatabase: values.connection.dbdatabase,
@@ -26,15 +29,17 @@
                     algorithm: config.algorithm,
                     algorithmrequirements: 'argparse\nloguru',
                     returnoutput: 'output'
-                };
-                let options = {
+            };
+            let options = {
             		method: 'POST',
             		headers: {
                 		'Content-Type':
                     	'application/json;charset=utf-8'
-            	},
+            },
             	body: JSON.stringify(payload)
         }
+	    
+	// Sending request to get Data
         let fetchRes = fetch(endpointData.endpoint,options);
         fetchRes.then(res =>
             res.json()).then(d => { $.send('output', d) }).catch(err => { $.send('output', err) })
@@ -44,6 +49,7 @@
                 $.destroy();
             }
         };
+	    
         instance.close = function() {
             fn = null;
         };
