@@ -25,7 +25,7 @@
     "id": "run",
     "group": "TypeRefinery",
     "name": "Run (node & edges)",
-    "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/run.html",
+    "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/runNodesEdges.html",
     "author": "Team_Typerefienry",
     "icon": "fa fa-code",
     "color": "",
