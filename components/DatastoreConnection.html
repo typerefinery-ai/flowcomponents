@@ -8,24 +8,34 @@
     exports.inputs = [{ id: 'input', name: 'Input' }];
     exports.outputs = [{ id: 'output', name: 'Output' }];
     exports.meta = { settingswidth: 1200 };
- exports.make = function(instance, config) {
+    exports.make = function(instance, config) {
         instance.message = async function($) {
-            const endpoint = 'http://127.0.0.1:8000/datastore/connection';
-            var output;
-            const res = await fetch(endpoint);
-            const res_data = await res.json();
-            output = res_data.map(el => ({id: el.connectionid, name: el.connectionid }));
-            const connection = res_data.find(el => el.connectionid === config.connectionid)
-	    if(connection) {
-		instance.send('output', {
+	var connectionsList;
+
+	// Getting all the connections from the store
+        const endpoint = 'http://127.0.0.1:8000/datastore/connection';
+        const res = await fetch(endpoint);
+        const res_data = await res.json();
+
+	// Getting connections details to display the dropdown list of all connections
+        connectionsList = res_data.map(el => ({id: el.connectionid, name: el.label + ' - ' + el.connectionid }));
+
+	// Find the selected connection
+        const connection = res_data.find(el => el.connectionid === config.connectionid);
+
+	if(connection) {
+	const connectionDetails = {
 		dbhost: connection.host,
 		dbport: connection.port,
 		dbdatabase: connection.database,
-	    });
-	    }
-            instance.call = async function(data, answer) {
-                answer(output);
-            };
+	}
+	// send the connection details as the output of this block
+	instance.send('output', connectionDetails);
+	}
+	// Set the connections dropdown in the UI
+        instance.call = async function(data, answer) {
+        	answer(connectionsList);
+        };
         };
         instance.configure = function() {
         };
@@ -37,10 +47,9 @@
 <readme>
 </readme>
 <script>
-	// yourdatabase is the name of your component in lower-case
+    // datastoreconnection is the name of your component in lower-case
     ON('configure_datastoreconnection', function(data) {
         data.call(function(response) {
-			console.log(response);
             SET('%connectionidList', response);
         });
     });
