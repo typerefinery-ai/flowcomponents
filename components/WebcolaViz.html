@@ -14,61 +14,63 @@
         var values = {};
 
 	instance.message = function($) {
-	// Getting endpoint from the user
-        const endpointData = { endpoint: config.endpoint }
-			
-	// Inputs to this block will be saved in values Object
-        values[$.input] = $.data
+		// Getting endpoint from the user
+        	const endpointData = { endpoint: config.endpoint }
 
-	if (values.graph_data && values.theme) {
-		var project;
-		var input_data = {
-			theme: values.theme,
-			graph_data: values.graph_data
-		};
-				
-	// Replacing GRAPH_DATA variable with actual DATA
-	const codeWithData = config.code.replace('GRAPH_DATA', JSON.stringify(input_data.graph_data))
-	// Replacing THEME variable with actual THEME
-	const code = codeWithData.replace('THEME', JSON.stringify(input_data.theme))
+		// Inputs to this block will be saved in values Object
+            	values[$.input] = $.data
 
-	const payload = {
-		"code": code,
-		"dependecies": ["https://d3js.org/d3.v4.js", "https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js"],
-		"returnoutput": "script"
-	};
-        let options = {
-		method: 'POST',
-		headers: {
-		'Content-Type':
-			'application/json;charset=utf-8'
-	},
-            	body: JSON.stringify(payload)
-       	}
-	// Sending request to generate SVG
-	Promise.all([
-		fetch("http://127.0.0.1:8000/datastore/project").then(value => value.json()),
-		fetch(endpointData.endpoint,options).then(value => value.json()),
-	]).then(([projects, output]) => {
-	// Getting current project
-	project = projects.find(el => el.flowid == instance.main.id)
-	// response output
-	const res = {
-		path: output["output.url"],
-		stepId: instance.id,
-		stepName: instance.module.name,
-		flowId: instance.main.id,
-		projectId: project.projectid
-	}
-	// Sending the response
-	$.send('output', res)
-	}).catch((err) => {
-	// Sending the error
-		$.send('output', err)
-	});
+		if (values.graph_data && values.theme) {
+			var project;
+			var input_data = {
+				theme: values.theme,
+				graph_data: values.graph_data
+			};
 
-	values.theme = null
-	}
+			// Replacing GRAPH_DATA variable with actual DATA
+			const codeWithData = config.code.replace('GRAPH_DATA', JSON.stringify(input_data.graph_data))
+			// Replacing THEME variable with actual THEME
+			const code = codeWithData.replace('THEME', JSON.stringify(input_data.theme))
+			// fetch projectid
+			fetch("http://127.0.0.1:8000/datastore/project").then(value => value.json()).then(projects => {
+				// Getting current project
+				project = projects.find(el => el.flowid == instance.main.id)
+
+				// svg payload
+				const payload = {
+					"code": code,
+					"dependecies": ["https://d3js.org/d3.v4.js", "https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js"],
+					"returnoutput": "script",
+					"label": instance.id + project.projectid
+				}
+
+				let options = {
+					method: 'POST',
+					headers: {
+						'Content-Type':
+							'application/json;charset=utf-8'
+					},
+            				body: JSON.stringify(payload)
+       				 }
+
+				// Sending request to generate SVG
+				fetch(endpointData.endpoint,options).then(value => value.json()).then((output) => {
+				const res = {
+					path: output["output.url"],
+					stepId: instance.id,
+					stepName: instance.module.name,
+					flowId: instance.main.id,
+					projectId: project.projectid
+				}
+				// Sending the response
+				$.send('output', res)
+			}).catch((err) => {
+				// Sending the error
+				$.send('output', err)
+			});
+			}).catch(err => console.log(err));
+			values.theme = null
+		}
         };
         instance.configure = function() {
             instance.outputs = [];
