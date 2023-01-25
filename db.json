@@ -1,7 +1,7 @@
 [
   {
     "id": "query",
-    "group": "_TypeRefinery",
+    "group": "@TypeRefinery",
     "name": "Datastore Query",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/DatastoreQuery.html",
     "author": "typerefinery.ai",
@@ -12,7 +12,7 @@
   },
   {
     "id": "connection",
-    "group": "* TypeRefinery",
+    "group": "@TypeRefinery",
     "name": "Datastore Connection",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/DatastoreConnection.html",
     "author": "typerefinery.ai",
@@ -23,7 +23,7 @@
   },
   {
     "id": "run",
-    "group": " - TypeRefinery",
+    "group": "@TypeRefinery",
     "name": "Run (node & edges)",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/RunNodesEdges.html",
     "author": "typerefinery.ai",
@@ -34,7 +34,7 @@
   },
   {
     "id": "theme",
-    "group": "ATypeRefinery",
+    "group": "@TypeRefinery",
     "name": "Datastore Theme",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/DatastoreTheme.html",
     "author": "typerefinery.ai",
@@ -45,7 +45,7 @@
   },
   {
     "id": "webcola",
-    "group": "TypeRefinery",
+    "group": "@TypeRefinery",
     "name": "Webcola Viz",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/WebcolaViz.html",
     "author": "typerefinery.ai",
@@ -56,7 +56,7 @@
   },
   {
     "id": "printJson",
-    "group": "TypeRefinery",
+    "group": "@TypeRefinery",
     "name": "Print-Json",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/printJson.html",
     "author": "typerefinery.ai",
@@ -67,7 +67,7 @@
   },
   {
     "id": "print",
-    "group": "TypeRefinery",
+    "group": "@TypeRefinery",
     "name": "Print",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/print.html",
     "author": "typerefinery.ai",
@@ -78,7 +78,7 @@
   },
   {
     "id": "publish",
-    "group": "TypeRefinery",
+    "group": "@TypeRefinery",
     "name": "Publish",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/publish.html",
     "author": "typerefinery.ai",
@@ -89,7 +89,7 @@
   },
   {
     "id": "subscribe",
-    "group": "TypeRefinery",
+    "group": "@TypeRefinery",
     "name": "Subscribe",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/subscribe.html",
     "author": "typerefinery.ai",
@@ -100,7 +100,7 @@
   },
   {
     "id": "trigger",
-    "group": "TypeRefinery",
+    "group": "@TypeRefinery",
     "name": "Trigger",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/trigger.html",
     "author": "typerefinery.ai",
