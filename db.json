@@ -1,7 +1,7 @@
 [
   {
     "id": "query",
-    "group": "TypeRefinery",
+    "group": "_TypeRefinery",
     "name": "Datastore Query",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/DatastoreQuery.html",
     "author": "Team_Typerefienry",
@@ -12,7 +12,7 @@
   },
   {
     "id": "connection",
-    "group": "TypeRefinery",
+    "group": "* TypeRefinery",
     "name": "Datastore Connection",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/DatastoreConnection.html",
     "author": "Team_Typerefienry",
@@ -23,7 +23,7 @@
   },
   {
     "id": "run",
-    "group": "TypeRefinery",
+    "group": " - TypeRefinery",
     "name": "Run (node & edges)",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/RunNodesEdges.html",
     "author": "Team_Typerefienry",
