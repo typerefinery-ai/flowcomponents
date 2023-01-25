@@ -34,7 +34,7 @@
   },
   {
     "id": "theme",
-    "group": "TypeRefinery",
+    "group": "ATypeRefinery",
     "name": "Datastore Theme",
     "url": "https://raw.githubusercontent.com/innovolve-ai/flowcomponents/main/components/DatastoreTheme.html",
     "author": "Team_Typerefienry",
