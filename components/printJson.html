@@ -1,17 +1,20 @@
 <script total>
 
+	exports.id = 'typerefineryprintjson';
 	exports.name = 'Print JSON';
-	exports.group = 'TypeRefinery';
-	exports.version = '1';
+	exports.group = '@TypeRefinery';
+	exports.version = '2';
 	exports.icon = 'fa fa-print';
-	exports.author = 'Team_Typerefinery';
-	exports.config = { repo: false, data: true };
+	exports.author = 'Martin Smola';
+	exports.config = { title: exports.name, version: exports.version, repo: false, data: true };
 	exports.inputs = [{ id: 'input', name: 'Input' }];
 
 	exports.make = function(instance, config) {
 		instance.message = function($) {
 
 			var data = $.data;
+			console.log("-----------");
+			console.log(data);
 
 			if (config.data !== false) {
 				if (data instanceof Buffer)
@@ -21,6 +24,7 @@
 			var count = 0;
 
 			for (var key in config) {
+				if (key == "repo" || key == "data" )
 				if (config[key])
 					count++;
 			}
@@ -49,6 +53,15 @@
 			instance.status('');
 		}
 
+		instance.configure = function() {
+			if (config.title === "") {
+				config.title = exports.name;
+			}
+			config.version = exports.version;
+		};
+
+		instance.configure();
+
 	};
 
 </script>
@@ -73,6 +86,7 @@ The component prints incoming data in a JSON format.
 
 <settings>
 	<div class="padding">
+		<div data---="input__?.title__text"><b>Title</b></div>
 		<div data---="input__?.repo__type:checkbox">Shows repository</div>
 		<div data---="input__?.data__type:checkbox">Shows data</div>
 	</div>
@@ -96,7 +110,8 @@ The component prints incoming data in a JSON format.
 <body>
 	<header>
 		<button class="exec" data-exec="FUNC.trigger">Clear</button>
-		<i class="ICON"></i>NAME
+		<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
+		<div><small><i>NAME v<span data-bind="CONFIG.version__text__empty"></span></i></small></div>
 	</header>
 	<footer>
 		<div data---="objecttree__!STATUS__exec:FUNC.printjson_click" class="selectable"></div>
