@@ -1,0 +1,5 @@
+[*]
+indent_style = space
+
+[*.html]
+indent_style = tab
