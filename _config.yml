@@ -1,0 +1,3 @@
+# _config.yml
+include:
+  - "db.json"

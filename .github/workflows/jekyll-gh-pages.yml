@@ -27,6 +27,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: |
+          node tester.js
+
+      - name: Generate db.json commit it back to repo.
+        run: |
+          node db.js
+
+      # only build once test is passed
+      
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Build with Jekyll
