@@ -1,6 +1,7 @@
 name: build db
 
-on: workflow_dispatch
+# on: workflow_dispatch # manual trigger
+on: [push] # trigger on push
 
 jobs:
   build:
@@ -20,12 +21,7 @@ jobs:
 
     - name: Run Tests
       run: |
-        TEST_OUTPUT=$(node tester.js)
-        TEST_RESULT="success"
-        if [ "$TEST_OUTPUT" != "*Status: FAILED*" ]; then
-          echo $TEST_OUTPUT
-          exit 1
-        fi        
+        node tester.js
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
