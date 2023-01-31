@@ -30,7 +30,7 @@
 					var payloadData = JSON.parse(data.payload);
 					var payloadTopic = payloadData.topic || "no topic";
 					//skip if topic is not the same
-					if (topic === payloadTopic) {
+					if (config.topic === payloadTopic) {
 						instance.send('output', payloadData);
 					}
 					break;
