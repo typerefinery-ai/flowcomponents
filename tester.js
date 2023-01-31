@@ -90,7 +90,6 @@ tester.finish = tester.done = function(message) {
 		console.log('| Failed             |', tester.stats.failed.padLeft(15, ' '), '|');
 		console.log('| Duration           |', (duration + ' ms').padLeft(15, ' '), '|');
 		console.log(div);
-		console.log(`Status: ${status}`);
 		tester.stop();
 	}, 5);
 };
