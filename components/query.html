@@ -1,0 +1,56 @@
+<script total>
+	
+	exports.id = "typerefinery_tqlquery";
+	exports.name = "TQL Query";
+	exports.icon = "fa fa-code";
+	exports.group = "@TypeRefinery";
+	exports.author = 'TypeRefinery.io';
+	exports.version = "1";
+
+	exports.config = { title: exports.name, version: exports.version };
+	exports.inputs = [{ id: "input", name: "Input" }];
+	exports.outputs = [{ id: "output", name: "Output" }];
+	
+	exports.meta = { settingswidth: 1200 };
+
+	exports.make = function (instance, config) {
+		instance.message = function ($) {
+			var data = {
+				...$.data,
+				dbquery: config.query,
+			};
+			instance.send("output", data);
+		};
+
+		instance.configure = function() {
+			if (config.title === "") {
+				config.title = exports.name;
+			}
+			config.version = exports.version;
+		};
+
+		instance.configure();
+
+	};
+
+</script>
+
+<readme>
+	Add TQL Query to your flow.
+</readme>
+
+<settings>
+	<div class="padding">
+		<div data---="input__?.title__text"><b>Title</b></div>
+		<div class="ui-input-label">Query:</div>
+		<div
+			data---="codemirror__?.query__type:tql;minheight:300;parent:auto;margin:60;tabs:true;trim:true"
+			class="m"
+		></div>
+	</div>
+</settings>
+
+<body>
+	<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
+	<div><small><i>NAME v<span data-bind="CONFIG.version__text__empty"></span></i></small></div>
+</body>

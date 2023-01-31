@@ -1,0 +1,84 @@
+<script total>
+	
+	exports.id = 'typerefinery_api_datastore_connection';
+	exports.name = 'API Datastore Connection';
+	exports.icon = 'fa fa-code';
+	exports.group = '@TypeRefinery';
+	exports.author = 'TypeRefinery.io';
+	exports.version = '1';
+	
+	exports.config = { title: exports.name, version: exports.version, endpoint: 'http://127.0.0.1:8000/datastore/connection', connectionid:'' };
+	exports.inputs = [{ id: 'input', name: 'Input' }];
+	exports.outputs = [{ id: 'output', name: 'Output' }];
+
+	exports.meta = { settingswidth: 1200 };
+
+	exports.make = function(instance, config) {
+		instance.message = async function($) {
+			var connectionsList;
+
+			// Getting all the connections from the store
+			const endpoint = config.endpoint;
+			const res = await fetch(endpoint);
+			const res_data = await res.json();
+
+			// Getting connections details to display the dropdown list of all connections
+			connectionsList = res_data.map(el => ({id: el.connectionid, name: el.label + ' - ' + el.connectionid }));
+
+			// Find the selected connection
+			const connection = res_data.find(el => el.connectionid === config.connectionid);
+
+			if(connection) {
+				const connectionDetails = {
+					dbhost: connection.host,
+					dbport: connection.port,
+					dbdatabase: connection.database,
+				}
+				// send the connection details as the output of this block
+				instance.send('output', connectionDetails);
+			}
+			// Set the connections dropdown in the UI
+			instance.call = async function(data, answer) {
+				answer(connectionsList);
+			};
+		};
+
+		instance.configure = function() {
+			if (config.title === "") {
+				config.title = exports.name;
+			}
+			config.version = exports.version;
+		};
+
+		instance.configure();
+
+	};
+</script>
+
+<readme>
+	Get list of connections from datastore endpoint.
+</readme>
+
+<settings>
+	<div class="padding">
+		<div data---="input__?.title__text"><b>Title</b></div>
+		<div data---="input__?.endpoint__required:1"><b>Endpoint</b></div>
+		<div data---="input__?.connectionid__dirsource:%connectionidList;dirraw:1;placeholder:Choose a connection;dirempty:No connection" class="m"><b>Connection</b></div>
+	</div>
+</settings>
+
+<script>
+	// datastoreconnection is the name of your component in lower-case
+	ON('configure_datastoreconnection', function(data) {
+		data.call(function(response) {
+			SET('%connectionidList', response);
+		});
+	});
+</script>
+
+<body>
+	<header>
+		<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
+		<div><small><i>NAME v<span data-bind="CONFIG.version__text__empty"></span></i></small></div>
+	</header>
+</body>

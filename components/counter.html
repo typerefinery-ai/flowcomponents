@@ -1,0 +1,69 @@
+<script total>
+	
+	exports.id = "typerefinery_counter";
+	exports.name = "Counter";
+	exports.icon = "fa fa-calculator";
+	exports.group = "@TypeRefinery";
+	exports.author = "TypeRefinery.io";
+	exports.version = "1";
+	
+	exports.config = { title: exports.name, version: exports.version };
+	exports.inputs = [{ id: "input", name: "Input" }];
+
+	exports.make = function (instance, config) {
+		var count = 0;
+
+		instance.message = function ($) {
+			count++;
+			instance.status(count);
+			$.destroy();
+		};
+
+		instance.trigger = function (data) {
+			count = 0;
+			instance.status(count);
+		};
+
+		instance.configure = function() {
+			if (config.title === "") {
+				config.title = exports.name;
+			}
+			config.version = exports.version;
+		};
+
+		instance.configure();
+		
+	};
+</script>
+
+<style>
+	.CLASS .status {
+		font-size: 35px;
+		margin: 0;
+		padding: 0 10px 10px;
+		font-weight: bold;
+		text-align: center;
+	}
+</style>
+
+<readme>
+	The component counts incoming messages.
+</readme>
+
+<settings>
+	<div class="padding">
+		<div data---="input__?.title__text"><b>Title</b></div>
+	</div>
+</settings>
+
+<body>
+	<header>
+		<button class="exec button" data-exec="FUNC.trigger">Reset</button>
+		<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
+		<div><small><i>NAME v<span data-bind="CONFIG.version__text__empty"></span></i></small></div>
+	</header>
+	<footer
+		data-bind="STATUS__text:(value || 0).format(0)"
+		class="status"
+	></footer>
+</body>

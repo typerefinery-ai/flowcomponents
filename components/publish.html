@@ -1,0 +1,104 @@
+<script total>
+
+	exports.id = 'typerefinery_publish';
+	exports.name = 'Publish';
+	exports.icon = 'fa fa-crosshairs';
+	exports.group = '@TypeRefinery';
+	exports.author = 'TypeRefinery.io';
+	exports.version = '1';
+
+	exports.config = { title: exports.name, version: exports.version, name: '', readme: '' };
+	exports.inputs = [{ id: 'data', name: 'Data' }];
+
+	exports.type = 'output2';
+
+	exports.call = function(data, answer) {
+		// "this" means FlowStream instance
+		this.io(function(err, response) {
+			var arr = [];
+			for (var flow of response) {
+				for (var com of flow.items) {
+					if (com.type === 'input') {
+						com.id = flow.id + '_' + com.id;
+						com.name = '<b>' + flow.name.encode() + ':</b> ' + com.name.encode();
+						arr.push(com);
+					}
+				}
+			}
+			arr.quicksort('name');
+			answer(arr);
+		});
+	};
+
+	exports.make = function(instance, config) {
+
+		var flowstreamid;
+		var instanceid;
+
+		instance.message = function(msg) {
+			if (flowstreamid && instanceid)
+				instance.toinput(msg.data, flowstreamid, instanceid);
+			msg.destroy();
+		};
+
+		instance.flowstream = function(id, type) {
+			if (!id || (config.id && config.id.split('_')[0] === id))
+				refresh();
+		};
+
+		var refresh = function() {
+			if (config.id) {
+				var arr = config.id.split('_');
+				flowstreamid = arr[0];
+				instanceid = arr[1];
+				instance.io(flowstreamid, instanceid, function(err, com) {
+					if (com)
+						instance.status({ name: com.name + '/' + com.item.name });
+					else
+						instance.status({ name: '' });
+				});
+			} else
+				instance.status({ name: '' });
+		};
+
+		instance.configure = function() {
+			if (config.title === "") {
+				config.title = exports.name;
+			}
+			config.version = exports.version;
+
+			refresh();
+		};
+
+		setTimeout(refresh, 3000);
+	};
+
+</script>
+
+
+<settings>
+	<div class="padding">
+		<div data---="input__?.title__text"><b>Title</b></div>
+		<div data---="input__?.id__dirsource:%inputs;dirraw:1;placeholder:Choose a specific input;dirempty:No input" class="m"><b>Input</b></div>
+	</div>
+</settings>
+
+<readme>
+	The component publish the data to the specific `Input` component.
+</readme>
+
+<script>
+	ON('configure_publish', function(data) {
+		data.call(function(response) {
+			SET('%inputs', response);
+		}, true);
+	});
+</script>
+
+<body>
+	<header>
+		<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
+		<div><small><i>NAME v<span data-bind="CONFIG.version__text__empty"></span></i></small></div>
+		<div>Name: <b class="monospace" data-bind="STATUS.name__text__empty"></b></div>
+	</header>
+</body>

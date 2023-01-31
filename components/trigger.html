@@ -1,0 +1,111 @@
+<script total>
+
+	exports.id = 'typerefinery_senddata';
+	exports.name = 'Send Data';
+	exports.group = '@TypeRefinery';
+	exports.version = '2';
+	exports.icon = 'fa fa-bullhorn';
+	exports.author = 'Team_Typerefinery';
+	exports.config = { title: exports.name, version: exports.version, random: true, type: 'object', data: '', restart: false };
+	exports.outputs = [{ id: 'output', name: 'Output' }];
+
+	exports.make = function(instance, config) {
+
+		instance.trigger = function() {
+
+			var val;
+
+			switch (config.type) {
+				case 'number':
+					val = config.random ? U.random() : config.data.parseFloat();
+					break;
+				case 'buffer':
+					try {
+						val = config.random ? Buffer.from(U.random_string()) : Buffer.from(config.data, 'base64');
+					} catch (e) {
+						instance.throw(e);
+					}
+					break;
+				case 'date':
+					val = config.random ? NOW.add('-' + U.random(500, 10) + ' seconds') : config.data.parseDate();
+					break;
+				case 'object':
+					try {
+						val = config.random ? {} : (new Function('return ' + config.data))();
+					} catch (e) {
+						instance.throw(e);
+					}
+					break;
+				case 'boolean':
+					val = config.random ? U.random() % 2 === 0 : config.data === 'true' || config.data === 'on' || config.data === '1';
+					break;
+				default:
+					val = config.random ? U.random_string(20) : config.data;
+					break;
+			}
+
+			instance.send('output', val);
+		};
+
+		instance.configure = function() {
+			if (config.title === "") {
+				config.title = exports.name;
+			}
+			config.version = exports.version;
+		};
+
+		instance.configure();
+
+		config.restart && setTimeout(() => instance.trigger(), 5000);
+	};
+
+</script>
+
+<style>
+	.CLASS .padding { padding: 0 10px 10px; }
+	.CLASS footer > div { margin: 10px; }
+	.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }
+	.CLASS button { width: 100%; height: 24px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: #F0F0F0; margin: 0; }
+	.CLASS button:hover { background-color: #F8F8F8; }
+	.CLASS button:active { background-color: #E0E0E0; }
+	.CLASS .ui-objecttree { background-color: #f0f0f0; padding: 4px; }
+	.CLASS .largetext { max-height: 100px; overflow-y: auto; }
+
+	.ui-dark .CLASS button { border-color: #404040; color: #FFF; background-color: #222; }
+	.ui-dark .CLASS button:hover { background-color: #303030; }
+	.ui-dark .CLASS button:active { background-color: #404040; }
+
+	.CLASS .output { text-align: right }
+</style>
+
+<settings>
+	<div class="padding">
+		<div data---="input__?.title__text"><b>Title</b></div>
+		<div data---="input__?.type__dirsource:string|String,number|Number,boolean|Boolean,date|Date,object|Object,buffer|Buffer as Base64;required:1">Type</div>
+		<div class="mt10 m">
+			<div data---="input__?.restart__type:checkbox">Trigger 5s after initialization.</div>
+			<div data---="input__?.random__type:checkbox">Random data</div>
+		</div>
+		<div data-bind="?.random__hide" class="hidden">
+			<hr />
+			<div data---="input__?.data__required:1;height:250;type:multiline;maxlength:100000;monospace:1">Data</div>
+		</div>
+	</div>
+</settings>
+
+<readme>
+The component triggers data into the Flow.
+</readme>
+
+<body>
+	<header>
+		<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
+		<div><small><i>NAME v<span data-bind="CONFIG.version__text__empty"></span></i> - <b class="monospace" data-bind="CONFIG.type__text__empty"></b></small></div>
+	</header>
+	<div class="padding">
+		<button class="exec" data-exec="FUNC.trigger">Run</button>
+	</div>
+	<footer>
+		<div class="monospace selectable largetext" data---="objecttree__!CONFIG.data__text__empty"></div>
+	</footer>
+</body>

@@ -1,0 +1,82 @@
+<script total>
+	
+	exports.id = 'typerefinery_api_datastore_theme';
+	exports.name = 'API Datastore Theme';
+	exports.icon = 'fa fa-code';
+	exports.group = '@TypeRefinery';
+	exports.author = 'TypeRefinery.io';
+	exports.version = '1';
+
+	exports.config = { title: exports.name, version: exports.version, endpoint: 'http://127.0.0.1:8000/datastore/theme', themeid: '' };
+	exports.inputs = [{ id: 'input', name: 'Input' }];
+	exports.outputs = [{ id: 'output', name: 'Output' }];
+
+	exports.meta = { settingswidth: 1200 };
+	
+	exports.make = function(instance, config) {
+		instance.message = async function($) {
+			var themesList;
+
+			// Getting all the themes from the store
+			const endpoint = config.endpoint;
+			const res = await fetch(endpoint);
+			const res_data = await res.json();
+
+			// Getting theme details to display the dropdown list of all themes
+			themesList = res_data.map(el => ({id: el.themeid, name: `${el.label} (${el.themeid},${el.theme.substr(12)})`}));
+
+			// Find the selected theme
+			const selectedTheme = res_data.find(el => el.themeid === config.themeid)
+
+			if(selectedTheme) {
+				const themeDetails = JSON.parse(selectedTheme.theme);
+				// send the theme details as the output of this block
+				instance.send('output', themeDetails);
+			}
+
+			// Set the themes dropdown in the UI
+			instance.call = async function(data, answer) {
+					answer(themesList);
+			};
+
+		};
+
+		instance.configure = function() {
+			if (config.title === "") {
+				config.title = exports.name;
+			}
+			config.version = exports.version;
+		};
+
+		instance.configure();
+
+	};
+</script>
+
+<readme>
+	Get list of themes from datastore endpoint.
+</readme>
+
+<settings>
+	<div class="padding">
+		<div data---="input__?.title__text"><b>Title</b></div>
+		<div data---="input__?.endpoint__required:1"><b>Endpoint</b></div>
+		<div data---="input__?.themeid__dirsource:%themeidList;dirraw:1;placeholder:Choose a theme;dirempty:No theme" class="m"><b>Theme</b></div>
+	</div>
+</settings>
+
+<script>
+	// datastoretheme is the name of your component in lower-case
+	ON('configure_datastoretheme', function(data) {
+		data.call(function(response) {
+			SET('%themeidList', response);
+		});
+	});
+</script>
+
+<body>
+	<header>
+		<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
+		<div><small><i>NAME v<span data-bind="CONFIG.version__text__empty"></span></i></small></div>
+	</header>
+</body>
