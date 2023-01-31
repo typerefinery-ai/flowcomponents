@@ -17,7 +17,7 @@ require('../tester')(async function(describe, done) {
 	await describe(function(test, next) {
 
 		// Random string
-		test.configure({ random: true, data: 'NOT_RANDOM' });
+		test.configure({ random: true, data: 'NOT_RANDOM', type: 'string' });
 		test.output = function(msg) {
 			test.fail(msg.data === 'NOT_RANDOM', 'Random string');
 		};
@@ -26,7 +26,7 @@ require('../tester')(async function(describe, done) {
 
 		// NOT Random string
 		setTimeout(function() {
-			test.configure({ random: false, data: 'NOT_RANDOM' });
+			test.configure({ random: false, data: 'NOT_RANDOM', type: 'string' });
 
 			test.output = function(msg) {
 				test.ok(msg.data === 'NOT_RANDOM', 'NOT Random string');
