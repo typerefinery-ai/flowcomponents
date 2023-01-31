@@ -1,13 +1,13 @@
 <script total>
 
-	exports.id = 'typerefinery_payloadwrap';
-	exports.name = 'Payload Wrap';
+	exports.id = 'typerefinery_api_payload';
+	exports.name = 'API Payload';
 	exports.icon = 'fa fa-code';
 	exports.group = '@TypeRefinery';
 	exports.author = 'TypeRefinery.io';
-	exports.version = '1';
+	exports.version = '2';
 
-	exports.config = { title: exports.name, version: exports.version, topic: "topic", topicforce: true };
+	exports.config = { title: exports.name, version: exports.version, topic: "topic", type: "wrap", topicforce: true };
 	exports.inputs = [{ id: 'input', name: 'Input' }];
 	exports.outputs = [{ id: 'output', name: 'Output' }];
 
@@ -22,13 +22,29 @@
 			if (config.topicforce) {
 				data.topic = config.topic;
 			}
-			instance.send('output', { payload: JSON.stringify(data) });
-			// or $.destroy();
+			switch (config.type) {
+				case 'wrap':
+					instance.send('output', { payload: JSON.stringify(data) });
+					break;
+				default:
+					var payloadData = JSON.parse(data.payload);
+					var payloadTopic = payloadData.topic || "no topic";
+					//skip if topic is not the same
+					if (topic === payloadTopic) {
+						instance.send('output', payloadData);
+					}
+					break;
+			}
+			
+			$.destroy();
 		};
 
 		instance.configure = function() {
 			if (config.topic === "") {
 				config.topic = "topic";
+			}
+			if (config.type === "") {
+				config.type = "wrap";
 			}
 			if (config.title === "") {
 				config.title = exports.name;
@@ -58,6 +74,7 @@
 	<div class="padding">
 		<div data---="input__?.title__text"><b>Title</b></div>
 		<div data---="input__?.topic__text"><b>Topic</b></div>
+		<div data---="input__?.type__dirsource:wrap|Wrap,unwrap|Unwrap;required:1">Type</div>
 		<div data---="input__?.topicforce__type:checkbox">Overwrite data Topic?</div>
 	</div>
 </settings>
@@ -67,5 +84,6 @@
 		<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
 		<div><small><i>NAME v<span data-bind="CONFIG.version__text__empty"></span></i></small></div>
 		<div>Topic: <b class="monospace" data-bind="CONFIG.topic__text__empty"></b></div>
+		<div>Type: <b class="monospace" data-bind="CONFIG.type__text__empty"></b></div>
 	</header>
 </body>
