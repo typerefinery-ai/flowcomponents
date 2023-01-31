@@ -1,23 +1,9 @@
 name: build db
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: [main]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
 
 jobs:
   build:
@@ -42,19 +28,3 @@ jobs:
     - name: Generate db.json commit it back to repo.
       run: |
         node db.js
-
-    - name: Setup Pages
-      uses: actions/configure-pages@v1
-      
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v1
-      with:
-        path: '.'
-    - name: Upload db
-      uses: actions/upload-artifact@main
-      with:
-        name: "db.json"
-        path: "."
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v1
