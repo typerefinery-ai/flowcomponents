@@ -4,8 +4,8 @@
 
 ## Component Database
 
-[Readme](https://innovolve-ai.github.io/flowcomponents)
-[Component Database](https://innovolve-ai.github.io/flowcomponents/db.json)
+* [Readme](https://innovolve-ai.github.io/flowcomponents)
+* [Component Database](https://innovolve-ai.github.io/flowcomponents/db.json)
 
 ## Run unit-test for all tests
 
