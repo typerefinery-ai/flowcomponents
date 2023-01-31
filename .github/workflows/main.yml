@@ -1,0 +1,36 @@
+name: Upload to KeyCDN
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    name: Complie DB
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get latest code
+      uses: actions/checkout@v3
+      
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run Tests
+      run: |
+        TEST_OUTPUT=$(node tester.js)
+        TEST_RESULT="success"
+        if [ "$TEST_OUTPUT" != "*Status: FAILED*" ]; then
+          echo $TEST_OUTPUT
+          exit 1
+        fi        
+
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Compile DB [skip ci]
+
+    - name: Generate db.json commit it back to repo.
+      run: |
+        node db.js
