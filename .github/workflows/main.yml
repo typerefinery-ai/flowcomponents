@@ -1,4 +1,4 @@
-name: Upload to KeyCDN
+name: build db
 
 on: workflow_dispatch
 
