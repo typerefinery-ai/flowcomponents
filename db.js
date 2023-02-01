@@ -56,7 +56,7 @@ PATH.fs.readdir('components', function(err, response) {
 			data.id = group ? evaluate(id[0]).id : '';
 			data.group = group ? evaluate(group[0]).group : '';
 			data.name = name ? evaluate(name[0]).name : '';
-			data.url = 'https://innovolve-ai.github.io/flowcomponents/components/' + filename;
+			data.url = 'https://typerefinery-ai.github.io/flowcomponents/components/' + filename;
 			data.author = author ? evaluate(author[0]).author : '';
 			data.icon = icon ? evaluate(icon[0]).icon : '';
 			data.color = color ? evaluate(color[0]).color : '';

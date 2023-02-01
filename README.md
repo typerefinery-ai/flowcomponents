@@ -1,11 +1,11 @@
 # Total.js FlowStream components by TypeRefinery
 
-[![Deploy Jekyll with GitHub Pages dependencies preinstalled](https://github.com/innovolve-ai/flowcomponents/actions/workflows/jekyll-gh-pages.yml/badge.svg)](https://github.com/innovolve-ai/flowcomponents/actions/workflows/jekyll-gh-pages.yml)
+[![Deploy Jekyll with GitHub Pages dependencies preinstalled](https://github.com/typerefinery-ai/flowcomponents/actions/workflows/jekyll-gh-pages.yml/badge.svg)](https://github.com/typerefinery-ai/flowcomponents/actions/workflows/jekyll-gh-pages.yml)
 
 ## Component Database
 
-* [Readme](https://innovolve-ai.github.io/flowcomponents)
-* [Component Database](https://innovolve-ai.github.io/flowcomponents/db.json)
+* [Readme](https://typerefinery-ai.github.io/flowcomponents)
+* [Component Database](https://typerefinery-ai.github.io/flowcomponents/db.json)
 
 ## Run unit-test for all tests
 
