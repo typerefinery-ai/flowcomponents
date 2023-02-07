@@ -1,0 +1,87 @@
+<script total>
+
+	exports.id = 'typerefinery_code';
+	exports.name = 'Code';
+	exports.icon = 'fa fa-code';
+	exports.group = "@TypeRefinery";
+	exports.author = 'TypeRefinery.io';
+	exports.version = '1';
+
+	exports.config = { outputs: 1, code: '// instance {FlowStreamInstance};\n// $ {FlowStreamMessage};\n// vars {Object};\n// repo {Object};\n// data {String/Number/Boolean/Date/Buffer/Object};\n// $.send(\'output\', data); // or simply send(data); which uses the first output\n// $.destroy();\n// $.throw(err);\n\n// IMPORTANT: If you do not perform re-send, you need to destroy this message via $.destroy() method\n// IMPORTANT: methods $.send(), $.destroy() and $.throw() can be executed only once\n\n// $.send(\'output\', data);\n$.destroy();' };
+	exports.inputs = [{ id: 'input', name: 'Input' }];
+	exports.outputs = [{ id: 'output', name: 'Output' }];
+	exports.meta = { settingswidth: 1200 };
+
+	exports.make = function(instance, config) {
+
+		var fn;
+
+		instance.message = function($) {
+			if (fn) {
+				try {
+					var send = data => $.send('output', data);
+					fn($.data, instance, $, $, F.require, send, $.repo, $.vars, $.data);
+				} catch (e) {
+					$.throw(e);
+					$.destroy();
+				}
+			}
+		};
+
+		instance.configure = function() {
+			instance.outputs = [];
+			for (let i = 1; i <= config.outputs; i++)
+				instance.outputs.push({ id: 'output' + (i === 1 ? '' : i), name: 'Output #' + i });
+			instance.save();
+
+			try {
+				if (config.code) {
+					instance.status(1);
+					fn = new Function('value', 'instance', '$', 'message', 'require', 'send', 'repo', 'vars', 'data', config.code);
+				} else {
+					instance.status(0);
+					fn = null;
+				}
+			} catch (e) {
+				fn = null;
+				instance.throw('Code: ' + e.message);
+			}
+		};
+
+		instance.close = function() {
+			fn = null;
+		};
+
+		instance.configure();
+
+	};
+
+</script>
+
+<readme>
+	This component executes a custom JavaScript code as it is.
+
+	To send data to the default output use `send(somedata);`
+	To send data to specific output when number of outputs > 1 use `$.send('outputX', somedata)` where `X` is output index, see example bellow:
+	- first output--> `send(somedata)` or `$.send('output', somedata)`
+	- second output --> `$.send('output2', somedata)`
+	- ...
+	- 5th output --> `$.send('output5', somedata)`
+	- etc.
+</readme>
+
+<settings>
+	<div class="padding">
+		<div data---="input__?.title__text"><b>Title</b></div>
+		<div data---="input__?.outputs__type:number" class="m">Number of outputs</div>
+		<div class="ui-input-label">Code:</div>
+		<div data---="codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true" class="m"></div>
+	</div>
+</settings>
+
+<body>
+	<header>
+		<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
+		<div><small><i>NAME v<span data-bind="CONFIG.version__text__empty"></span></i></small></div>
+	</header>
+</body>
