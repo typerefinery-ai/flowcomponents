@@ -15,6 +15,7 @@
 
 		instance.message = function($) {
 			instance.trigger();
+			$.destroy();
 		};
 
 		instance.trigger = function() {
