@@ -35,6 +35,13 @@
 				case 'date':
 					val = config.random ? NOW.add('-' + U.random(500, 10) + ' seconds') : config.data.parseDate();
 					break;
+				case 'json':
+					try {
+						val = config.random ? {} : JSON.parse(config.data);
+					} catch (e) {
+						instance.throw(e);
+					}
+					break;
 				case 'object':
 					try {
 						val = config.random ? {} : (new Function('return ' + config.data))();
@@ -87,7 +94,7 @@
 <settings>
 	<div class="padding">
 		<div data---="input__?.title__text"><b>Title</b></div>
-		<div data---="input__?.type__dirsource:string|String,number|Number,boolean|Boolean,date|Date,object|Object,buffer|Buffer as Base64;required:1">Type</div>
+		<div data---="input__?.type__dirsource:string|String,number|Number,boolean|Boolean,date|Date,json|Json,object|Object,buffer|Buffer as Base64;required:1">Type</div>
 		<div class="mt10 m">
 			<div data---="input__?.restart__type:checkbox">Trigger 5s after initialization.</div>
 			<div data---="input__?.random__type:checkbox">Random data</div>
