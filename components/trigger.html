@@ -14,12 +14,11 @@
 	exports.make = function(instance, config) {
 
 		instance.message = function($) {
-			instance.trigger();
+			$.send('output', instance.getData());
 			$.destroy();
 		};
 
-		instance.trigger = function() {
-
+		instance.getData = function() {
 			var val;
 
 			switch (config.type) {
@@ -58,7 +57,11 @@
 					break;
 			}
 
-			instance.send('output', val);
+			return val;
+		}; 
+
+		instance.trigger = function() {
+			instance.send('output', instance.getData());
 		};
 
 		instance.configure = function() {
