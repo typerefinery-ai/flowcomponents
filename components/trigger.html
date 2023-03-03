@@ -2,14 +2,20 @@
 
 	exports.id = 'typerefinery_senddata';
 	exports.name = 'Send Data';
-	exports.group = '@TypeRefinery';
-	exports.version = '2';
 	exports.icon = 'fa fa-bullhorn';
+	exports.group = '@TypeRefinery';
 	exports.author = 'Team_Typerefinery';
+	exports.version = '3';
+
 	exports.config = { title: exports.name, version: exports.version, random: true, type: 'object', data: '', restart: false };
+	exports.inputs = [{ id: 'input', name: 'Input' }];
 	exports.outputs = [{ id: 'output', name: 'Output' }];
 
 	exports.make = function(instance, config) {
+
+		instance.message = function($) {
+			instance.trigger();
+		};
 
 		instance.trigger = function() {
 
@@ -94,7 +100,7 @@
 </settings>
 
 <readme>
-The component triggers data into the Flow.
+The component triggers data into the Flow. It can be used for testing purposes or for sending data to other components on input.
 </readme>
 
 <body>
