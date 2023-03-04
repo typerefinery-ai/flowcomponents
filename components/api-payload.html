@@ -7,7 +7,7 @@
 	exports.author = 'TypeRefinery.io';
 	exports.version = '2';
 
-	exports.config = { title: exports.name, version: exports.version, topic: "topic", type: "wrap", topicforce: true };
+	exports.config = { title: exports.name, version: exports.version, topic: "topic", type: "wrap" };
 	exports.inputs = [{ id: 'input', name: 'Input' }];
 	exports.outputs = [{ id: 'output', name: 'Output' }];
 
@@ -21,15 +21,14 @@
 			var data = $.data;
 			switch (config.type) {
 				case 'wrap':
-					if (config.topicforce) {
-						data.topic = config.topic;
-					}
-					$.send('output', { payload: JSON.stringify(data) });
+					console.log({ payload: JSON.stringify(data), topic: config.topic });
+					$.send('output', { payload: JSON.stringify(data), topic: config.topic });
 					break;
 				default:
 					var payloadData = JSON.parse(data.payload);
-					if (payloadData) {
-						var payloadTopic = payloadData.topic || "no topic";
+					var payloadTopic = data.topic || "no topic";
+					console.log(payloadTopic);
+					if (payloadData && payloadTopic) {
 						//skip if topic is not the same
 						if (config.topic === payloadTopic) {
 							$.send('output', payloadData);
@@ -37,7 +36,7 @@
 					}
 					break;
 			}
-			
+
 			$.destroy();
 		};
 
@@ -77,7 +76,6 @@
 		<div data---="input__?.title__text"><b>Title</b></div>
 		<div data---="input__?.topic__text"><b>Topic</b></div>
 		<div data---="input__?.type__dirsource:wrap|Wrap,unwrap|Unwrap;required:1">Type</div>
-		<div data---="input__?.topicforce__type:checkbox">Overwrite data Topic?</div>
 	</div>
 </settings>
 
