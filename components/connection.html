@@ -23,7 +23,8 @@
 				dbhost: config.host,
 				dbdatabase: config.database
 			};
-			instance.send('output', data);
+			$.send("output", data);
+			$.destroy();
 		};
 
 		instance.call = async function(data, answer) {

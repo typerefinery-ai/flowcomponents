@@ -31,7 +31,8 @@
 			if(selectedQuery) {
 				const queryDetails = { dbquery: selectedQuery.query };
 				// send the query details as the output of this block
-				instance.send('output', queryDetails);
+				$.send('output', queryDetails);
+				$.destroy();
 			}
 			// Set the queries dropdown in the UI
 			instance.call = async function(data, answer) {

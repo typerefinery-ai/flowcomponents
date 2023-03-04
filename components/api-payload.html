@@ -24,14 +24,14 @@
 			}
 			switch (config.type) {
 				case 'wrap':
-					instance.send('output', { payload: JSON.stringify(data) });
+					$.send('output', { payload: JSON.stringify(data) });
 					break;
 				default:
 					var payloadData = JSON.parse(data.payload);
 					var payloadTopic = payloadData.topic || "no topic";
 					//skip if topic is not the same
 					if (config.topic === payloadTopic) {
-						instance.send('output', payloadData);
+						$.send('output', payloadData);
 					}
 					break;
 			}

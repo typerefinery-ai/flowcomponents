@@ -19,7 +19,8 @@
 				...$.data,
 				dbquery: config.query,
 			};
-			instance.send("output", data);
+			$.send("output", data);
+			$.destroy();
 		};
 
 		instance.configure = function() {

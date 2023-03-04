@@ -35,7 +35,8 @@
 					dbdatabase: connection.database,
 				}
 				// send the connection details as the output of this block
-				instance.send('output', connectionDetails);
+				$.send('output', connectionDetails);
+				$.destroy();
 			}
 			// Set the connections dropdown in the UI
 			instance.call = async function(data, answer) {

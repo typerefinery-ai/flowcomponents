@@ -31,7 +31,8 @@
 			if(selectedTheme) {
 				const themeDetails = JSON.parse(selectedTheme.theme);
 				// send the theme details as the output of this block
-				instance.send('output', themeDetails);
+				$.send('output', themeDetails);
+				$.destroy();
 			}
 
 			// Set the themes dropdown in the UI
