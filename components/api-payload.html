@@ -19,19 +19,21 @@
 
 		instance.message = function($) {
 			var data = $.data;
-			if (config.topicforce) {
-				data.topic = config.topic;
-			}
 			switch (config.type) {
 				case 'wrap':
+					if (config.topicforce) {
+						data.topic = config.topic;
+					}
 					$.send('output', { payload: JSON.stringify(data) });
 					break;
 				default:
 					var payloadData = JSON.parse(data.payload);
-					var payloadTopic = payloadData.topic || "no topic";
-					//skip if topic is not the same
-					if (config.topic === payloadTopic) {
-						$.send('output', payloadData);
+					if (payloadData) {
+						var payloadTopic = payloadData.topic || "no topic";
+						//skip if topic is not the same
+						if (config.topic === payloadTopic) {
+							$.send('output', payloadData);
+						}
 					}
 					break;
 			}
