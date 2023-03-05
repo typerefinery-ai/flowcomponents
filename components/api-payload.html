@@ -25,7 +25,12 @@
 					$.send('output', { payload: JSON.stringify(data), topic: config.topic });
 					break;
 				default:
-					var payloadData = JSON.parse(data.payload);
+					var payloadData = data.payload;
+					try {
+						payloadData = JSON.parse(data.payload);
+					} catch {
+						console.log("Error: Payload is not a valid JSON, using as is.");
+					}
 					var payloadTopic = data.topic || "no topic";
 					console.log(payloadTopic);
 					if (payloadData && payloadTopic) {
