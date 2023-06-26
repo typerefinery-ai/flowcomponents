@@ -1,24 +1,22 @@
 <script total>
-	
+
 	exports.id = 'typerefinery_api_createsvg_webcolaviz';
 	exports.name = 'API WebCola Viz';
 	exports.icon = 'fa fa-code';
 	exports.group = '@TypeRefinery';
 	exports.author = 'TypeRefinery.io';
-	exports.version = '1';
+	exports.version = '2';
 
 	exports.config = { title: exports.name, version: exports.version, endpointcreatesvg: "http://127.0.0.1:8000/createSvg", endpointproject: 'http://127.0.0.1:8000/datastore/project', code: '' };
 	exports.inputs = [{ id: 'graph_data', name: 'DATA' },{ id: 'theme', name: 'Theme' }];
 	exports.outputs = [{ id: 'output', name: 'Output' }];
-	
 	exports.meta = { settingswidth: 1200 };
-
 	exports.make = function(instance, config) {
 		var fn;
 		var values = {};
 
 		instance.message = function($) {
-					
+
 			// Inputs to this block will be saved in values Object
 			values[$.input] = $.data
 
@@ -28,7 +26,7 @@
 					theme: values.theme,
 					graph_data: values.graph_data
 				};
-							
+
 				// Replacing GRAPH_DATA variable with actual DATA
 				const codeWithData = config.code.replace('GRAPH_DATA', JSON.stringify(input_data.graph_data))
 				// Replacing THEME variable with actual THEME
@@ -75,38 +73,24 @@
 			}
 		};
 
-		instance.configure = function() {
-			instance.outputs = [];
-			for (let i = 1; i <= config.outputs; i++)
-				instance.outputs.push({ id: 'output' + (i === 1 ? '' : i), name: 'Output #' + i });
-			instance.save();
-
-			try {
-				if (config.code) {
-					instance.status(1);
-					fn = new Function('value', 'instance', '$', 'message', 'require', 'send', 'repo', 'vars', 'data', config.code);
-				} else {
-					instance.status(0);
-					fn = null;
-				}
-			} catch (e) {
-				fn = null;
-				instance.throw('Code: ' + e.message);
-			}
-		};
-
 		instance.close = function() {
 			fn = null;
 		};
 
+		instance.configure = function() {
+			if (config.title === "") {
+				config.title = exports.name;
+			}
+			config.version = exports.version;
+		};
+
 		instance.configure();
+
 	};
 </script>
-
 <readme>
 	Run WebCola Viz to your flow.
 </readme>
-
 <settings>
 	<div class="padding">
 		<div data---="input__?.title__text"><b>Title</b></div>
@@ -116,7 +100,6 @@
 		<div data---="codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true" class="m"></div>
 	</div>
 </settings>
-
 <body>
 	<header>
 		<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
