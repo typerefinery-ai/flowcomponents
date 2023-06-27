@@ -7,7 +7,7 @@
 	exports.author = 'TypeRefinery.io';
 	exports.version = '2';
 
-	exports.config = { title: exports.name, version: exports.version, endpointcreatesvg: "http://127.0.0.1:8000/createSvg", endpointproject: 'http://127.0.0.1:8000/datastore/project', code: '' };
+	exports.config = { title: exports.name, version: exports.version, endpointcreatesvg: "http://127.0.0.1:8000/createSvg", endpointproject: 'http://127.0.0.1:8000/datastore/project', dependenciesjs: 'https://d3js.org/d3.v4.js https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js', code: '' };
 	exports.inputs = [{ id: 'graph_data', name: 'DATA' },{ id: 'theme', name: 'Theme' }];
 	exports.outputs = [{ id: 'output', name: 'Output' }];
 	exports.meta = { settingswidth: 1200 };
@@ -34,7 +34,7 @@
 
 				const payload = {
 					"code": code,
-					"dependecies": ["https://d3js.org/d3.v4.js", "https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js"],
+					"dependencies": dependenciesjs.split(' '),
 					"returnoutput": "script"
 				};
 
@@ -96,6 +96,7 @@
 		<div data---="input__?.title__text"><b>Title</b></div>
 		<div data---="input__?.endpointproject__required:1" class="m">Endpont Projects</div>
 		<div data---="input__?.endpointcreatesvg__required:1" class="m">Endpont CreateSvg</div>
+		<div data---="input__?.dependenciesjs__text:1" class="m">Dependencies JS (space separated)</div>
 		<div class="ui-input-label">Code:</div>
 		<div data---="codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true" class="m"></div>
 	</div>
