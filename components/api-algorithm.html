@@ -1,0 +1,92 @@
+<script total>
+	
+	exports.id = 'typerefinery_api_python_algorithm';
+	exports.name = 'API Python Algorithm';
+	exports.icon = 'fa fa-code';
+	exports.group = '@TypeRefinery';
+	exports.author = 'TypeRefinery.io';
+	exports.version = '1';
+
+	exports.config = { title: exports.name, version: exports.version, algorithm: '', algorithmrequirements: 'argparse loguru', endpoint: 'http://127.0.0.1:8000/algorithm' };
+	exports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'query', name: 'TQL Query' }];
+	exports.outputs = [{ id: 'output', name: 'Output' }];
+	
+	exports.meta = { settingswidth: 1200 };
+
+	exports.make = function(instance, config) {
+		var fn;
+		var values = {};
+		instance.message = function($) {
+			// Getting endpoint from the user
+			const endpointData = {
+					endpoint: config.endpoint,
+			}
+		
+			// Inputs to this block will be saved in values Object
+			values[$.input] = $.data;
+
+			if (values.connection && values.query && config.algorithm) {
+				var payload = {
+					dbhost: values.connection.dbhost,
+					dbport: values.connection.dbport,
+					dbdatabase: values.connection.dbdatabase,
+					dbquery: values.query.dbquery,
+					algorithm: config.algorithm,
+					algorithmrequirements: config.algorithmrequirements.split(' ').join('\n'),
+					returnoutput: 'output'
+				};
+				let options = {
+					method: 'POST',
+					headers: {
+						'Content-Type':
+						'application/json;charset=utf-8'
+					},
+					body: JSON.stringify(payload)
+				}
+		
+				// Sending request to get Data
+				let fetchRes = fetch(endpointData.endpoint,options);
+				fetchRes.then(res =>res.json())
+					.then(d => { $.send('output', d) })
+					.catch(err => { $.send('output', err) })
+					
+					values.query = null;
+			} else {
+				// IMPORTANT: we must destroy the current message becase we don't need to send it next
+				$.destroy();
+			}
+		};
+		
+		instance.close = function() {
+			fn = null;
+		};
+
+		instance.configure = function() {
+			if (config.title === "") {
+				config.title = exports.name;
+			}
+			config.version = exports.version;
+		};
+
+		instance.configure();
+
+	};
+</script>
+<readme>
+	Run a node and edges algorithm on a TypeRefinery database.
+</readme>
+<settings>
+	<div class="padding">
+		<div data---="input__?.title__text"><b>Title</b></div>
+		<div data---="input__?.endpoint__required:1" class="m">Endpont</div>
+		<div data---="input__?.algorithmrequirements__text:1" class="m">Requirements (space separated)</div>
+		<div class="ui-input-label">Algorithm:</div>
+		<div data---="codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true" class="m"></div>
+	</div>
+</settings>
+<body>
+	<header>
+		<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
+		<div><small><i>NAME v<span data-bind="CONFIG.version__text__empty"></span></i></small></div>
+	</header>
+</body>
