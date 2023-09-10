@@ -88,7 +88,7 @@
 </readme>
 
 <script>
-	ON('configure_publish', function(data) {
+	ON('configure_typerefinery_publish', function(data) {
 		data.call(function(response) {
 			SET('%inputs', response);
 		}, true);

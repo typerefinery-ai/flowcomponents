@@ -86,7 +86,7 @@
 </settings>
 
 <script>
-	ON('configure_subscribe', function(data) {
+	ON('configure_typerefinery_subscribe', function(data) {
 		data.call(function(response) {
 			SET('%outputs', response);
 		}, true);
