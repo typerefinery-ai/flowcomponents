@@ -1,13 +1,13 @@
 <script total>
-	
+
 	exports.id = 'typerefinery_api_datastore_connection';
 	exports.name = 'API Datastore Connection';
 	exports.icon = 'fa fa-code';
 	exports.group = '@TypeRefinery';
 	exports.author = 'TypeRefinery.io';
-	exports.version = '1';
-	
-	exports.config = { title: exports.name, version: exports.version, endpoint: 'http://127.0.0.1:8000/datastore/connection', connectionid:'' };
+	exports.version = '3';
+
+	exports.config = { title: exports.name, version: exports.version, endpoint: 'http://127.0.0.1:8000/datastore/connection', connectionid:'defaultconnection' };
 	exports.inputs = [{ id: 'input', name: 'Input' }];
 	exports.outputs = [{ id: 'output', name: 'Output' }];
 
@@ -17,6 +17,7 @@
 		instance.message = async function($) {
 			var connectionsList;
 
+			var inputData = $.data;
 			// Getting all the connections from the store
 			const endpoint = config.endpoint;
 			const res = await fetch(endpoint);
@@ -29,13 +30,14 @@
 			const connection = res_data.find(el => el.connectionid === config.connectionid);
 
 			if(connection) {
-				const connectionDetails = {
+				inputData.connection = {
 					dbhost: connection.host,
 					dbport: connection.port,
 					dbdatabase: connection.database,
 				}
+
 				// send the connection details as the output of this block
-				$.send('output', connectionDetails);
+				$.send('output', inputData);
 				$.destroy();
 			}
 			// Set the connections dropdown in the UI

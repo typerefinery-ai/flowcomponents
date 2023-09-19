@@ -17,6 +17,7 @@
 		instance.message = async function($) {
 			var queryList;
 
+			var inputData = $.data;
 			// Getting all the queries from the store
 			const endpoint = config.endpoint;
 			const res = await fetch(endpoint);
@@ -29,9 +30,11 @@
 			const selectedQuery = res_data.find(el => el.queryid === config.queryid)
 
 			if(selectedQuery) {
-				const queryDetails = { dbquery: selectedQuery.query };
+				inputData.query = {
+					dbquery: selectedQuery.query,
+				}
 				// send the query details as the output of this block
-				$.send('output', queryDetails);
+				$.send('output', inputData);
 				$.destroy();
 			}
 			// Set the queries dropdown in the UI

@@ -17,6 +17,7 @@
 		instance.message = async function($) {
 			var themesList;
 
+			var inputData = $.data;
 			// Getting all the themes from the store
 			const endpoint = config.endpoint;
 			const res = await fetch(endpoint);
@@ -29,9 +30,11 @@
 			const selectedTheme = res_data.find(el => el.themeid === config.themeid)
 
 			if(selectedTheme) {
-				const themeDetails = JSON.parse(selectedTheme.theme);
+				inputData.theme = {
+					theme: selectedTheme.theme,
+				}				
 				// send the theme details as the output of this block
-				$.send('output', themeDetails);
+				$.send('output', inputData);
 				$.destroy();
 			}
 
