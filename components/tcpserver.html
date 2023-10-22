@@ -1,0 +1,174 @@
+<script total>
+
+	exports.id = 'typerefinery_tcpserver';
+	exports.name = 'TCP Server';
+	exports.icon = 'fa fa-code';
+	exports.group = 'Common';
+	exports.author = 'Team_Typerefinery';
+	exports.version = '1';
+
+	exports.config = { title: exports.name, version: exports.version, host: 'localhost', port: 8234 };
+	exports.inputs = [];
+	exports.outputs = [{ id: 'output', name: 'Output' }];
+
+	// exports.npm = ['npm_module_1', 'npm_module_2@version'];
+	// exports.meta = { readonly: false, singleton: false, hidden: false };
+
+	exports.make = function(instance, config) {
+
+		const net = require('net');
+		var server;
+
+		const state = () => {
+			var obj;
+			if (!server) {
+				obj = { listening: false, connection: false, error: false, drop: false, close: true, status: 'close' };
+			} else {
+				const { listening, connection, error, drop, close } = server;
+				obj = { listening, connection, error, drop, close };
+				const current = Object.keys(obj).filter(s => obj[s]);
+				obj.status = current.length ? current[0] : 'disconnected';
+			}
+			instance.state = { status: obj.status, name: config.host + ':' + config.port };
+			instance.status(instance.state);
+			return obj;
+		}
+
+		instance.listen = function($) {
+			console.log('server listening to %j', server.address());
+		}
+		function connect() {
+			state();
+
+			if (net) {
+				server = net.createServer(handleConnection);
+				server.listen(config.port, () => {
+					console.log('server listening');
+				});
+			}
+		}
+
+		function disconnect(callback) {
+			if (!server)
+				return callback && callback();
+
+			if (server.close) {
+				server.close(cb);
+			} else {
+				cb();
+			}
+
+			function cb() {
+				server.close();
+				server = null;
+				callback && callback();
+			};
+		};
+
+		function handleConnection(conn) {
+			if (conn) {
+				console.log('client connected');
+				const remoteAddress = conn.remoteAddress + ':' + conn.remotePort;
+				console.log('new client connection from %s', remoteAddress);
+				conn.setEncoding('utf8');
+				conn.on('data', (d) => {
+    				onConnData(remoteAddress, d);
+  				});
+				conn.on('end', () => {
+    				onConnClose(remoteAddress);
+  				});
+				conn.once('close', () => {
+    				onConnClose(remoteAddress);
+  				});
+				conn.on('error', (err) => {
+    				onConnClose(remoteAddress, err);
+  				});
+			}
+		}
+
+		function onConnData(remoteAddress, d) {
+			console.log('connection data from %s: %j', remoteAddress, d);
+			instance.send('output', { data: d });
+		}
+
+
+		function onConnClose(remoteAddress) {
+			    console.log('connection from %s closed', remoteAddress);
+		}
+
+		function onConnError(remoteAddress, err) {
+			console.log('Connection %s error: %s', remoteAddress, err);
+		}
+
+		instance.message = function($) {
+			var data = $.data;
+			$.send('output', data);
+			// or $.destroy();
+		};
+
+		instance.configure = function() {
+			// "config" is changed
+			disconnect(connect);
+		};
+
+		instance.close = function() {
+			// this instance is closed
+			//disconnect(notifypubsub);
+			disconnect();
+		};
+
+		instance.variables = function(variables) {
+			// FlowStream variables are changed
+		};
+
+		instance.variables2 = function(variables) {
+			// Global variables are changed
+		};
+
+		instance.configure();
+
+	};
+
+</script>
+
+<style>
+	.CLASS .padding { padding: 0 10px 10px; }
+	.CLASS footer > div { margin: 10px; }
+	.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }
+	.CLASS button { width: 100%; height: 24px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: #F0F0F0; margin: 0; }
+	.CLASS button:hover { background-color: #F8F8F8; }
+	.CLASS button:active { background-color: #E0E0E0; }
+	.CLASS .ui-objecttree { background-color: #f0f0f0; padding: 4px; }
+	.CLASS .largetext { max-height: 100px; overflow-y: auto; }
+
+	.ui-dark .CLASS button { border-color: #404040; color: #FFF; background-color: #222; }
+	.ui-dark .CLASS button:hover { background-color: #303030; }
+	.ui-dark .CLASS button:active { background-color: #404040; }
+
+	.CLASS .output { text-align: right }
+</style>
+
+<settings>
+	<div class="padding">
+		<div data---="input__?.title__text"><b>Title</b></div>
+		<div class="mt10 m">
+			<div data---="input__?.host__text"><b>Host</b></div>
+			<div data---="input__?.port__text:number" class="m"><b>Port</b></div>
+		</div>
+	</div>
+</settings>
+
+<readme>
+Start a TCP server on the specified host and port.
+</readme>
+
+<body>
+	<header>
+		<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
+		<div><small><i>NAME v<span data-bind="CONFIG.version__text__empty"></span></i></small></div>
+		<footer>
+			<div><i>Host: <span data-bind="CONFIG.host__text__empty"></span></i></div>
+			<div><i>Port: <span data-bind="CONFIG.port__text__empty"></span></i></div>
+		</footer>
+	</header>
+</body>
