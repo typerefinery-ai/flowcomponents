@@ -23,3 +23,12 @@ Install powershell 7 core.
 ./compile.ps1
 ```
 
+## Usage
+
+In Total JS Flow Setting set Main Components to:
+
+* https://typerefinery-ai.github.io/flowcomponents/db.json
+
+and Custom Components to:
+
+* https://cdn.totaljs.com/flowstream/components/db.json
