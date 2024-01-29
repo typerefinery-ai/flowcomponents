@@ -23,43 +23,29 @@
 					endpoint: config.endpoint,
 			}
 
-			// Inputs to this block will be saved in values Object
-			var inputData = $.data;
-
-			if (inputData.connection && inputData.url) {
-				var dbquery = "";
-				if (inputData.query && inputData.query.dbquery) {
-					dbquery = inputData.query.dbquery;
-				}
-				var payload = {
-					"algorithm": {
-						"source": config.algorithm,
-						"requirements": config.algorithmrequirements.split(' ').join('\n'),
-						"output": 'output'
-					},
-					"config": inputData
-				};
-				$.send('payload', payload);
-				let options = {
-					method: 'POST',
-					headers: {
-						'Content-Type':
-						'application/json;charset=utf-8'
-					},
-					body: JSON.stringify(payload)
-				}
-
-				// Sending request to get Data
-				let fetchRes = fetch(endpointData.endpoint,options);
-				fetchRes.then(res =>res.json())
-					.then(d => { $.send('output', d) })
-					.catch(err => { $.send('output', err) })
-
-					values.query = null;
-			} else {
-				// IMPORTANT: we must destroy the current message becase we don't need to send it next
-				$.destroy();
+			var payload = {
+				"algorithm": {
+					"source": config.algorithm,
+					"requirements": config.algorithmrequirements.split(' ').join('\n'),
+					"output": 'output'
+				},
+				"config": $.data || {}
+			};
+			$.send('payload', payload);
+			let options = {
+				method: 'POST',
+				headers: {
+					'Content-Type':
+					'application/json;charset=utf-8'
+				},
+				body: JSON.stringify(payload)
 			}
+
+			// Sending request to get Data
+			let fetchRes = fetch(endpointData.endpoint,options);
+			fetchRes.then(res =>res.json())
+				.then(d => { $.send('output', d) })
+				.catch(err => { $.send('output', err) })
 		};
 
 		instance.close = function() {
