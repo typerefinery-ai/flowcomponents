@@ -1,0 +1,95 @@
+<script total>
+
+
+	exports.id = 'typerefinery_file_read';
+	exports.name = 'File Reader';
+	exports.icon = 'fa fa-file-import';
+	exports.group = '@TypeRefinery';
+	exports.author = 'TypeRefinery.io';
+	exports.version = '1';
+
+	exports.config = { path: '', parser: 'json'};
+	exports.inputs = [{ id: 'input', name: 'Input' }];
+	exports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];
+
+	exports.make = function(instance, config) {
+
+		instance.message = function($) {
+			$.send('output', instance.getData());
+			$.destroy();
+		};
+
+		instance.getData = function() {
+			var fileData = "";
+			try {
+				if (!config.path)
+					return;
+				console.log(["path", config.path]);
+				var path = config.path[0] === '~' ? PATH.root(config.path.substring(1)) : config.path;
+				console.log(["path2", path]);
+				var file = F.Fs.readFileSync(path);
+				console.log(["file", file]);
+				NOW = new Date();
+				instance.status({ used: NOW, size: file.length });
+				console.log(["config.parser", config.parser]);
+				switch (config.parser) {
+					case 'json':
+						fileData = file.toString('utf8').parseJSON(true);
+						break;
+					case 'text':
+						fileData = file.toString('utf8');
+						break;
+					case 'number':
+						fileData = parseFloat(file.toString('utf8').replace(/\,/g, '.'));
+						if (isNaN(fileData))
+							fileData = null;
+						break;
+					case 'date':
+						fileData = file.toString('utf8').parseDate();
+						if (fileData && isNaN(fileData.getTime()))
+							fileData = null;
+						break;
+				}
+			} catch (e) {
+				console.log(["error",e]);
+				//instance.send('error', e);
+			}
+			return fileData;
+		}
+
+	};
+
+</script>
+
+<settings>
+	<div class="padding">
+		<div class="row">
+			<div class="col-md-9 m">
+				<div data---="input__?.path___required:1;placeholder:/www/flowstream/data.json"><b>Path</b></div>
+				<div class="help">Absolute path to the file. The path starts with the <code>~</code> char will watch filename in the project's root directory.</div>
+			</div>
+		</div>
+		<div data---="input__?.parser__dirsource:json|JSON,text|Text,buffer|Buffer,number|Number,date|Date;required:1__'json'" class="m">Parser</div>
+	</div>
+</settings>
+
+<readme>
+The component watches the existence of the file, then reads the content and sends it next. The file will be removed automatically after reading.
+</readme>
+
+<style>
+	.CLASS footer { padding: 10px; font-size: 12px; }
+	.CLASS hr { margin: 5px 0; }
+</style>
+
+<body>
+	<header>
+		<i class="icon"></i>NAME
+	</header>
+	<footer>
+		<div><i class="far fa-calendar mr5"></i><span data-bind="STATUS.used__text__format:yyyy-MM-dd HH:mm:ss__empty"></span></div>
+		<div><i class="fa fa-calculator mr5"></i><span data-bind="STATUS.size__text__helper:filesize__empty"></span></div>
+		<hr />
+		<div data-bind="CONFIG.path__text__empty"></div>
+	</footer>
+</body>
