@@ -32,8 +32,8 @@
 				return;
 			}
 			try {
-				console.log(["path", config.path]);
-				var path = config.path[0] === '~' ? PATH.root(config.path.substring(1)) : config.path;
+				console.log(["path", fileToRead]);
+				var path = fileToRead[0] === '~' ? PATH.root(fileToRead.substring(1)) : fileToRead;
 				var file = F.Fs.readFileSync(path);
 				NOW = new Date();
 				instance.status({ used: NOW, size: file.length, path: fileToRead });
@@ -71,7 +71,7 @@
 	<div class="padding">
 		<div class="row">
 			<div class="col-md-9 m">
-				<div data---="input__?.path___required:1;placeholder:/www/flowstream/data.json"><b>Path</b></div>
+				<div data---="input__?.path__text:1;placeholder:/www/flowstream/data.json"><b>Path</b></div>
 				<div class="help">Absolute path to the file. The path starts with the <code>~</code> char will watch filename in the project's root directory.</div>
 			</div>
 		</div>
