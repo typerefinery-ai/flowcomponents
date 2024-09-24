@@ -1,0 +1,359 @@
+<script total>
+
+	exports.id = 'typerefinery_chatgpt';
+	exports.name = 'ChatGPT';
+	exports.icon = 'fa fa-robot';
+	exports.group = '@TypeRefinery';
+	exports.author = 'TypeRefinery.io';
+	exports.version = '1';
+
+	exports.config = { title: exports.name, version: exports.version, model: '', apikey: '', question: '', url: '' };
+	exports.inputs = [{ id: 'input', name: 'Question' }];
+	exports.outputs = [{ id: 'output', name: 'Answer' }, { id: 'error', name: 'Error' }];
+	exports.meta = { settingswidth: 1200 };
+
+	exports.make = function (instance, config) {
+
+		var model;
+		var cfg;
+
+		instance.message = async function ($) {
+
+			var data = $.data;
+
+			if (!config.apikey) {
+				$.send('error', 'Config is missing API key');
+				return;
+			}
+
+			if (!config.model && !config.modeloverride) {
+				$.send('error', 'Config is missing model');
+				return;
+			}
+
+
+			if (!data) {
+				$.send('error', 'Input text is missing: ' + data);
+				return;
+			}
+
+			var OPTIONS = {};
+			var URL = "";
+			var DATA = {};
+			var controller = new AbortController();
+			var signal = controller.signal;
+			var timeoutId = setTimeout(() => controller.abort(), 60000)
+
+			console.log("sending model: " + cfg.model);
+			switch (cfg.model) {
+				case 'whisper-1':
+					var path = $.data.path || $.data;
+
+					controller = new AbortController();
+					signal = controller.signal;
+					timeoutId = setTimeout(() => controller.abort(), 60000)
+
+					DATA = {
+						model: cfg.model,						
+					};
+
+					if (!messages[0].file) {
+						$.send('error', 'Error: File is missing in messages[0].file.');
+						return;
+					}
+
+					const formData = new FormData();
+					formData.append('file', messages[0].file);
+					formData.append('model', cfg.model);
+					formData.append('language', messages[0].lang ? messages[0].lang : 'en');
+
+					OPTIONS = {
+						method: 'POST',
+						headers: {
+							'Authorization': 'Bearer ' + cfg.apikey,
+							'Content-Type': 'application/json'
+						},
+						signal: signal,
+						body: formData
+					};
+
+					// Sending request to get Data
+					await fetch(URL, OPTIONS).then(response => {
+							clearTimeout(timeoutId);
+							if (!response.ok) {
+								console.log("response", response.status);
+								throw new Error('Response error' + response.status);
+							}
+							return response.text()
+						})
+						.then(text => {
+							if (text) {
+								$.send('output', text);
+							} else {
+								$.send('output', text);
+							}
+						})
+						.catch(error => {
+							if (error.name === 'AbortError') {
+							  console.error('Fetch aborted due to timeout');
+							} else {
+							  console.error('Fetch error:', error);
+							}
+							$.send('error', error);
+						});
+					break;
+				case 'dall-e-3':
+					var path = $.data.path || $.data;
+
+					config.question && messages.unshift({ role: 'system', content: config.question });
+
+					controller = new AbortController();
+					signal = controller.signal;
+					timeoutId = setTimeout(() => controller.abort(), 60000)
+
+					DATA = {
+						model: cfg.model,
+						"prompt": messages[0].content,
+						"n": messages[0].count ? messages[0].count : 1,
+						"quality": messages[0].quality ? messages[0].quality : "standard",
+						"size": messages[0].size ? messages[0].size : "1024x1024"
+					};
+
+					OPTIONS = {
+						method: 'POST',
+						headers: {
+							'Authorization': 'Bearer ' + cfg.apikey,
+							'Content-Type': 'application/json'
+						},
+						signal: signal,
+						body: JSON.stringify(DATA)
+					};
+
+					URL = (config.url ? config.url : 'https://api.openai.com/v1/images/generations');
+
+					// Sending request to get Data
+					await fetch(URL, OPTIONS).then(response => {
+							clearTimeout(timeoutId);
+							if (!response.ok) {
+								console.log("response", response.status);
+								throw new Error('Response error' + response.status);
+							}
+							return response.json()
+						})
+						.then(data => {
+							if (data && data.data) {
+								$.send('output', data.data[0].url);
+							} else {
+								$.send('output', data);
+							}
+						})
+						.catch(error => {
+							if (error.name === 'AbortError') {
+							  console.error('Fetch aborted due to timeout');
+							} else {
+							  console.error('Fetch error:', error);
+							}
+							$.send('error', error);
+						});
+					break;
+				default:
+					var messages = $.data.messages || $.data;
+
+					console.log("sending message", messages)
+
+					if (!(messages instanceof Array)) {
+						$.send('error', 'Error: Input must be array of messages');
+						return;
+					}
+
+					if (!messages[0] || !messages[0].role) {
+						$.send('error', 'Error: Each message object must have message role attribute : user or assistant or system');
+						return;
+					}
+
+					config.question && messages.unshift({ role: 'system', content: config.question });
+
+					controller = new AbortController();
+					signal = controller.signal;
+					timeoutId = setTimeout(() => controller.abort(), 60000)
+
+					DATA = {
+						model: cfg.model,
+						messages: messages
+					};
+
+					OPTIONS = {
+						method: 'POST',
+						headers: {
+							'Authorization': 'Bearer ' + cfg.apikey,
+							'Content-Type': 'application/json'
+						},
+						signal: signal,
+						body: JSON.stringify(DATA)
+					};
+
+					URL = (config.url ? config.url : 'https://api.openai.com/v1/chat/completions');
+
+					// Sending request to get Data
+					await fetch(URL, OPTIONS).then(response => {
+							clearTimeout(timeoutId);
+							if (!response.ok) {
+								console.log("response", response.status);
+								throw new Error('Response error' + response.status);
+							}
+							return response.json()
+						})
+						.then(data => {
+							if (data && data.choices) {
+								$.send('output', data.choices[0].message.content);
+							}
+						})
+						.catch(error => {
+							if (error.name === 'AbortError') {
+							  console.error('Fetch aborted due to timeout');
+							} else {
+							  console.error('Fetch error:', error);
+							}
+							$.send('error', error);
+						});
+					break;
+			}
+		};
+
+		instance.configure = function () {
+			cfg = instance.replace(config);
+		};
+
+		instance.configure();
+	};
+</script>
+
+<style>
+	.CLASS .padding { padding: 0 10px 10px; }
+	.CLASS footer > div { margin: 10px; }
+	.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }
+	.CLASS button { width: 100%; height: 24px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: #F0F0F0; margin: 0; }
+	.CLASS button:hover { background-color: #F8F8F8; }
+	.CLASS button:active { background-color: #E0E0E0; }
+	.CLASS .ui-objecttree { background-color: #f0f0f0; padding: 4px; }
+	.CLASS .largetext { max-height: 100px; overflow-y: auto; }
+
+	.ui-dark .CLASS button { border-color: #404040; color: #FFF; background-color: #222; }
+	.ui-dark .CLASS button:hover { background-color: #303030; }
+	.ui-dark .CLASS button:active { background-color: #404040; }
+
+	.CLASS .output { text-align: right }
+</style>
+
+
+<settings>
+	<div class="padding">
+		<div data---="input__?.title__text"><b>Title</b></div>
+
+		<div data---="input__?.apikey__type:password;required:1"><b>API Key</b></div>
+		<div class="help"><a href="https://platform.openai.com/account/api-keys" target="_blank"><i class="ti ti-external"></i>Generate API key</a></div>
+
+		<div data---="input__?.model__dirsource:dall-e-3|DALL-E,o1-preview|GPT o1,o1-mini|GPT o1-mini,gpt-4o|GPT 4o,gpt-4o-mini|GTP 4o-mini,gpt-4|GPT 4,gpt-3.5-turbo|GPT 3.5 Turbo,gpt-3.5-turbo-instruct|GPT 3.5 Turbo instruct,whisper-1|Whisper">Model</div>
+		<div data---="input__?.modeloverride__text">Model Override</div>
+
+		<div data---="input__?.url__text">URL Override</div>
+
+		<div class="help">System message to set context</div>
+		<div data---="input__?.question__height:250;type:multiline;maxlength:100000;monospace:1">System Message</div>
+
+	</div>
+</settings>
+
+<readme>
+This component can talk to ChatGPT.
+
+To use custom models and API endpoints, you can use the following fields:
+
+- Custom models can be used by providing the model name in the model override field.
+- Custom API endpoints can be used by providing the URL in the URL override field.
+
+Custome model and URL override fields will use ChatGPT model.
+
+## Input
+
+Input will depend on selected model
+
+- __CPT 3.5 Turbo__ and __CPT 4__
+```js
+
+// Object
+{
+messages : [{ role: 'user', content: 'Text' }]
+}
+
+// or
+
+
+// Array
+[{ role: 'assistant', content: 'Text' }]
+```
+
+- __Whisper__
+```js
+
+// Object
+{
+path : 'path-to-file'
+}
+
+// or
+
+
+// String
+'path-to-file'
+```
+
+- __CPT 3.5 Turbo instruct__
+```js
+
+// Object
+{
+text : 'your question'
+}
+
+// or
+
+
+// String
+'your question'
+```
+
+
+## Output
+
+Output also depends on selected model
+- __CPT 3.5 Turbo__ and __CPT 4__
+```js
+'Response from assistant'
+```
+
+- __Whisper__
+```js
+
+// Object
+{
+text : 'transcipted text'
+}
+```
+- __CPT 3.5 Turbo instruct__
+```js
+
+// String
+'Response from assistant'
+```
+</readme>
+
+<body>
+	<header>
+		<i class="ICON"></i><b class="monospace" data-bind="CONFIG.title__text__empty"></b>
+		<div><small><i>NAME v<span data-bind="CONFIG.version__text__empty"></span></i> - <b class="monospace" data-bind="CONFIG.type__text__empty"></b></small></div>
+	</header>
+	<footer>
+		<div class="monospace selectable largetext" data---="objecttree__!CONFIG.data__text__empty"></div>
+	</footer>
+</body>
