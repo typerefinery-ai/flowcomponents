@@ -15,22 +15,28 @@
 	exports.make = function(instance, config) {
 
 		instance.message = function($) {
-			$.send('output', instance.getData());
+			$.send('output', instance.getData($.data));
 			$.destroy();
 		};
 
-		instance.getData = function() {
+		instance.getData = function(inputData) {
 			var fileData = "";
+			console.log(["inputData",inputData]);
+			var fileToRead = config.path;
+			if (typeof inputData === 'object' && inputData !== null && 'file' in inputData) {
+				fileToRead = inputData.file;
+				console.log("Input data has file attribute name will be using its value: " + fileToRead);
+			}
+			if (!fileToRead) {
+				instance.throw('Not file to read configured or passed in.');
+				return;
+			}
 			try {
-				if (!config.path)
-					return;
-				console.log(["path", config.path]);
-				var path = config.path[0] === '~' ? PATH.root(config.path.substring(1)) : config.path;
-				console.log(["path2", path]);
+				console.log(["path", fileToRead]);
+				var path = fileToRead[0] === '~' ? PATH.root(fileToRead.substring(1)) : fileToRead;
 				var file = F.Fs.readFileSync(path);
-				console.log(["file", file]);
 				NOW = new Date();
-				instance.status({ used: NOW, size: file.length });
+				instance.status({ used: NOW, size: file.length, path: fileToRead });
 				console.log(["config.parser", config.parser]);
 				switch (config.parser) {
 					case 'json':
@@ -65,7 +71,7 @@
 	<div class="padding">
 		<div class="row">
 			<div class="col-md-9 m">
-				<div data---="input__?.path___required:1;placeholder:/www/flowstream/data.json"><b>Path</b></div>
+				<div data---="input__?.path__text:1;placeholder:/www/flowstream/data.json"><b>Path</b></div>
 				<div class="help">Absolute path to the file. The path starts with the <code>~</code> char will watch filename in the project's root directory.</div>
 			</div>
 		</div>
@@ -90,6 +96,6 @@ The component watches the existence of the file, then reads the content and send
 		<div><i class="far fa-calendar mr5"></i><span data-bind="STATUS.used__text__format:yyyy-MM-dd HH:mm:ss__empty"></span></div>
 		<div><i class="fa fa-calculator mr5"></i><span data-bind="STATUS.size__text__helper:filesize__empty"></span></div>
 		<hr />
-		<div data-bind="CONFIG.path__text__empty"></div>
+		<div data-bind="STATUS.path__text__empty"></div>
 	</footer>
 </body>
