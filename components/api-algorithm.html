@@ -17,6 +17,26 @@
 		config.jyputerid = instance.id;
 		var fn;
 		var values = {};
+		var refresh = function() {
+
+			var inputs = {};
+
+			for (let key in instance.main.meta.flow) {
+				let m = instance.main.meta.flow[key];
+				if (m.connections) {
+					for (let conn in m.connections) {
+						for (let c of m.connections[conn]) {
+							if (c.id === instance.id)
+								inputs[c.index] = true;
+						}
+					}
+				}
+			}
+
+			instance.status({ inputs: Object.keys(inputs) });
+
+		};
+
 		instance.message = function($) {
 			// Getting endpoint from the user
 			const endpointData = {
@@ -60,7 +80,8 @@
 		};
 
 		instance.configure();
-
+		instance.refresh = refresh;
+		refresh();
 	};
 </script>
 <readme>
